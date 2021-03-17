@@ -1,0 +1,47 @@
+<mat-form-field class="example-full-width">
+  <mat-label>What needs to be done?</mat-label>
+  <input matInput placeholder="What needs to be done" [(ngModel)]="todoTitle" (keyup.enter)="addTodo()">
+</mat-form-field>
+
+<div class="todo-item" *ngFor="let todo of todosFiltered()" @fade>
+  <div class="todo-item-left">
+    <mat-checkbox [(ngModel)]="todo.completed" (change)="doneEdit(todo)"></mat-checkbox>
+    <div *ngIf="!todo.editing; else editingTodo" class="todo-item-label" [ngClass]="{ 'completed' : todo.completed }"
+      (dblclick)="editTodo(todo)">{{ todo.title }}</div>
+    <ng-template #editingTodo>
+      <mat-form-field class="example-full-width">
+        <mat-label>What needs to be done?</mat-label>
+        <input matInput [(ngModel)]="todo.title" (blur)="doneEdit(todo)" (keyup.enter)="doneEdit(todo)"
+          (keyup.esc)="cancelEdit(todo)" autofocus>
+      </mat-form-field>
+    </ng-template>
+  </div>
+  <div class="remove-item" (click)="deleteTodo(todo.id)">
+    &times;
+  </div>
+</div>
+
+<div class="extra-container">
+  <div>
+    <mat-checkbox (change)="checkAllTodos()" [(ngModel)]="!anyRemainingModel"> Check All</mat-checkbox>
+  </div>
+  <div>{{ remaining() }} items left</div>
+</div>
+
+<div class="extra-container">
+  <div>
+    <button mat-raised-button color="primary" [ngClass]="{'active': filter === 'all'}"
+      (click)="filter='all'">All</button>
+    <span class="ml-1"></span>
+    <button mat-raised-button color="primary" [ngClass]="{'active': filter === 'active'}"
+      (click)="filter='active'">Active</button>
+    <span class="ml-1"></span>
+    <button mat-raised-button color="primary" [ngClass]="{'active': filter === 'completed'}"
+      (click)="filter='completed'">Completed</button>
+  </div>
+
+  <div *ngIf="atLeastOneCompleted()">
+    <button mat-raised-button color="primary" (click)="clearCompleted()">Clear Completed</button>
+  </div>
+
+</div>

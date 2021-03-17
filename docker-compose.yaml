@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  nginx-angular:
+    container_name: nginx-angular
+    image: nginx-angular
+    build:
+      context: ./todo-angular
+      dockerfile: nginx.prod.dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+  api:
+    container_name: todo-api
+    image: todo-api
+    build:
+      context: .
+      dockerfile: todo-api/api.dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  postgres:
+    container_name: postgres
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    networks:
+      - app-network
+
+  cadvisor:
+    container_name: cadvisor
+    image: google/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8081:8080"
+    networks:
+      - app-network
+
+
+volumes:
+  postgres-data: 
+
+networks:
+  app-network:
+    driver: bridge
