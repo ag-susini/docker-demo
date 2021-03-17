@@ -11,4 +11,4 @@ COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
 # docker build -t nginx-angular -f nginx.dev.dockerfile .
 
 # 3. Run the docker container
-# docker container run -p 8080:80 -v $(pwd)/dist:/usr/share/nginx/html nginx-angular
+# docker container run -p 8080:80 -v $(pwd)/dist/todo-angular:/usr/share/nginx/html nginx-angular
